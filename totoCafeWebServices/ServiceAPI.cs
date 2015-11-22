@@ -148,7 +148,7 @@ namespace totoCafeWebServices
         /// <summary>
         /// Mobil uygulamamızın veritabanı kayıt işlemi, kullanıcı Register sayfasındaki butonu tıkladığında bu metot çalışacak
         /// </summary>
-        public void CreateNewUser(string Name, string Surname, string Email, string Password, DateTime BirthDate, double GenderID)
+        public void CreateNewUser(string Name, string Surname, string Email, string Password, string BirthDate, double GenderID)
         {
             if (dbConnection.State.ToString() == "Closed")
             {
@@ -157,16 +157,18 @@ namespace totoCafeWebServices
             int UserID = 0;
             //SCOPE_IDENTITY Bize veritabanına eklenen satırın ID sini getirir :)   kullanımı sadece bu kadar -->  SET @ID = SCOPE_IDENTITY()
             string query = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
+            DateTime birthDateTime = Convert.ToDateTime(BirthDate);
+            int Gender = Convert.ToInt32(GenderID);
 
             SqlCommand command = new SqlCommand(query, dbConnection);
             command.Parameters.AddWithValue("@Name", Name);
             command.Parameters.AddWithValue("@Surname", Surname);
             command.Parameters.AddWithValue("@Email", Email);
             command.Parameters.AddWithValue("@Password", Password);
-            command.Parameters.AddWithValue("@BirthDate", BirthDate);
-            command.Parameters.AddWithValue("@GenderID", GenderID);
+            command.Parameters.AddWithValue("@BirthDate", birthDateTime);
+            command.Parameters.AddWithValue("@GenderID", Gender);
             command.Parameters.AddWithValue("@PlatformID", 1); // PlatformID = 1 == TOTOCAFE  || PlatformID = 2 == FACEBOOK
-
+            
             //id ye ulaşmak için parametrenin direction unu OUTPUT olarak vermek zorundayız
             command.Parameters.Add("@ID", SqlDbType.Int).Direction = ParameterDirection.Output;
 
@@ -233,14 +235,14 @@ namespace totoCafeWebServices
             }
             int UserID = 0;
             string FacebookInsertQuery = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
-
+            int Gender = Convert.ToInt32(GenderID);
             SqlCommand command = new SqlCommand(FacebookInsertQuery, dbConnection);
             command.Parameters.AddWithValue("@Name", Name);
             command.Parameters.AddWithValue("@Surname", Surname);
             command.Parameters.AddWithValue("@Email", Email); //FacebookID buraya eklenecek
             command.Parameters.AddWithValue("@Password", Password); //Facebook Email Buraya Eklenecek
             command.Parameters.AddWithValue("@BirthDate", BirthDate);
-            command.Parameters.AddWithValue("@GenderID", GenderID);
+            command.Parameters.AddWithValue("@GenderID", Gender);
             command.Parameters.AddWithValue("@PlatformID", 2); // PlatformID = 1 == TOTOCAFE  || PlatformID = 2 == FACEBOOK
             command.Parameters.Add("@ID", SqlDbType.Int).Direction = ParameterDirection.Output;
 
@@ -343,7 +345,7 @@ namespace totoCafeWebServices
         /// User tablosuna yeni kayıt eklediğinde arkasından bu metot çalışır
         /// Unique userID ve metot çağırılırken UserTypeID si belirtilmiştir.
         /// </summary>
-        public void InsertUserToCostumerTable(double UserID,double UserTypeID)
+        public void InsertUserToCostumerTable(int UserID,int UserTypeID)
         {
             if (dbConnection.State.ToString() == "Closed")
             {
