@@ -148,7 +148,7 @@ namespace totoCafeWebServices
         /// <summary>
         /// Mobil uygulamamızın veritabanı kayıt işlemi, kullanıcı Register sayfasındaki butonu tıkladığında bu metot çalışacak
         /// </summary>
-        public void CreateNewUser(string Name, string Surname, string Email, string Password, string BirthDate, double GenderID)
+        public void CreateNewUser(string Name, string Surname, string Email, string Password, DateTime BirthDate, double GenderID)
         {
             if (dbConnection.State.ToString() == "Closed")
             {
@@ -157,18 +157,16 @@ namespace totoCafeWebServices
             int UserID = 0;
             //SCOPE_IDENTITY Bize veritabanına eklenen satırın ID sini getirir :)   kullanımı sadece bu kadar -->  SET @ID = SCOPE_IDENTITY()
             string query = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
-            DateTime birthDateTime = Convert.ToDateTime(BirthDate);
-            int Gender = Convert.ToInt32(GenderID);
 
             SqlCommand command = new SqlCommand(query, dbConnection);
             command.Parameters.AddWithValue("@Name", Name);
             command.Parameters.AddWithValue("@Surname", Surname);
             command.Parameters.AddWithValue("@Email", Email);
             command.Parameters.AddWithValue("@Password", Password);
-            command.Parameters.AddWithValue("@BirthDate", birthDateTime);
-            command.Parameters.AddWithValue("@GenderID", Gender);
+            command.Parameters.AddWithValue("@BirthDate", BirthDate);
+            command.Parameters.AddWithValue("@GenderID", GenderID);
             command.Parameters.AddWithValue("@PlatformID", 1); // PlatformID = 1 == TOTOCAFE  || PlatformID = 2 == FACEBOOK
-            
+
             //id ye ulaşmak için parametrenin direction unu OUTPUT olarak vermek zorundayız
             command.Parameters.Add("@ID", SqlDbType.Int).Direction = ParameterDirection.Output;
 
@@ -235,14 +233,14 @@ namespace totoCafeWebServices
             }
             int UserID = 0;
             string FacebookInsertQuery = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
-            int Gender = Convert.ToInt32(GenderID);
+
             SqlCommand command = new SqlCommand(FacebookInsertQuery, dbConnection);
             command.Parameters.AddWithValue("@Name", Name);
             command.Parameters.AddWithValue("@Surname", Surname);
             command.Parameters.AddWithValue("@Email", Email); //FacebookID buraya eklenecek
             command.Parameters.AddWithValue("@Password", Password); //Facebook Email Buraya Eklenecek
             command.Parameters.AddWithValue("@BirthDate", BirthDate);
-            command.Parameters.AddWithValue("@GenderID", Gender);
+            command.Parameters.AddWithValue("@GenderID", GenderID);
             command.Parameters.AddWithValue("@PlatformID", 2); // PlatformID = 1 == TOTOCAFE  || PlatformID = 2 == FACEBOOK
             command.Parameters.Add("@ID", SqlDbType.Int).Direction = ParameterDirection.Output;
 
@@ -345,7 +343,7 @@ namespace totoCafeWebServices
         /// User tablosuna yeni kayıt eklediğinde arkasından bu metot çalışır
         /// Unique userID ve metot çağırılırken UserTypeID si belirtilmiştir.
         /// </summary>
-        public void InsertUserToCostumerTable(int UserID,int UserTypeID)
+        public void InsertUserToCostumerTable(double UserID, double UserTypeID)
         {
             if (dbConnection.State.ToString() == "Closed")
             {
@@ -370,5 +368,181 @@ namespace totoCafeWebServices
             dbConnection.Close();
 
         }
+
+
+        public bool CheckAvailabilityOfTable(double TableID)
+        {
+            bool auth = false;
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            int tid = (int)TableID;
+
+            string query = "SELECT AvailabilityID FROM [Table] WHERE TableID=@TableID";
+            //CheckAvailability() select AvailabilityID from Table where TableID = @TableID | if == 1 Devam et, if == 2 ise Masa Frozen Bırak
+            //Avaliable table Avaliablety 1 == AVALIABLE 2 = FROZEN 
+
+            SqlCommand command = new SqlCommand(query, dbConnection);
+
+            command.Parameters.AddWithValue("@TableID", tid);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                if (int.Parse(reader["AvailabilityID"].ToString()) == 1) // AVALIABLE 
+                {
+                    auth = true;
+                }
+                //else "false" işlemi FROZEN demektir.
+            }
+
+            reader.Close();
+            dbConnection.Close();
+
+            return auth;
+        }
+        public bool CheckTableControllerIsExist(double TableID)
+        {
+            bool auth = false;
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            int tid = (int)TableID;
+
+            string query = "SELECT count(*) FROM TableController WHERE TableID=@TableID AND FinishDateTime != NULL";
+            //CheckTableController() select count from TableController where TableID = @TableID and FinishDateTime != NULL
+            //*      -Üstteki işlemde Eğer count = 0 ise MASA ŞUAN DOLU UYARISI VER! count = 1 ise evet masa boş yürü bro, devammmm.
+
+            SqlCommand command = new SqlCommand(query, dbConnection);
+
+            command.Parameters.AddWithValue("@TableID", tid);
+
+            int result = int.Parse(command.ExecuteScalar().ToString());
+
+            if (result == 1)
+            {
+                auth = true;  // Yani demekki masa boş, true dan yürüü
+            }
+
+            // else --> false demektir yani masa dolu, Alert mesajı çıkart!
+            dbConnection.Close();
+
+            return auth;
+        }
+        public void InsertRequestTableViaQr(double UserID, double CompanyID, double TableID)
+        {
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            int CostumerID = 0;
+            int uid = (int)UserID;
+            string firstquery = "SELECT CostumerID WHERE UserID = @UserID";
+            SqlCommand command = new SqlCommand(firstquery, dbConnection);
+            command.Parameters.AddWithValue("@UserID", uid);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                CostumerID = int.Parse(reader["CostumerID"].ToString());
+            }
+            reader.Close();
+            dbConnection.Close();
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+
+            string query = "INSERT INTO Request (CompanyID,CostumerID,TableID,Flag) VALUES (@CompanyID,@CostumerID,@TableID,@Flag)";
+            int compid = (int)CompanyID;
+            int tablid = (int)TableID;
+
+            command = new SqlCommand(query, dbConnection);
+
+            command.Parameters.AddWithValue("@CompanyID", compid);
+            command.Parameters.AddWithValue("@CostumerID", CostumerID);
+            command.Parameters.AddWithValue("@TableID", tablid);
+            command.Parameters.AddWithValue("@Flag", 0);
+
+            command.ExecuteNonQuery(); // insert data to "Request" Table
+
+            dbConnection.Close();
+        }
+
+        /// <summary>
+        /// Bu metot sürekli kontrol işlemi yapar. Costumer tarafında Qr okutulduktan sonra Request işlemleri yapıldıktan sonra 
+        /// Company tarafından isteğimiz onaylandığında "flag" imiz değişmiş olacak ve metot "true" döndürüp 
+        /// Costumer'ı menu sayfasına yönlendireceğiz.
+        ///reader ile flag değişkeni alınır ve kontrol edilir. Costumer tarafında default olarak 0 oluşturduğundan kontrol ederiz. Eğer 
+        //Eğer 0 'dan farklı ise demektir ki Company miz mesajımızı aldı ve bize mesaj olayı verdi.
+
+        /// </summary>
+        /// <param name="UserID"></param>
+        /// <param name="CompanyID"></param>
+        /// <param name="TableID"></param>
+        /// <returns></returns>
+        public bool CheckRequestTableFlag(double UserID, double CompanyID, double TableID)
+        {
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            int CostumerID = 0;
+            int uid = (int)UserID;
+            string firstquery = "SELECT CostumerID WHERE UserID = @UserID";
+            SqlCommand command = new SqlCommand(firstquery, dbConnection);
+            command.Parameters.AddWithValue("@UserID", uid);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                CostumerID = int.Parse(reader["CostumerID"].ToString());
+            }
+            reader.Close();
+            dbConnection.Close();
+            /////////////////////////////////////
+            bool auth = false;
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+
+            string query = "SELECT flag FROM Request WHERE (CompanyID=@CompanyID) AND (CostumerID=@CostumerID) AND (TableID=@TableID)";
+            //CheckTableController() select count from TableController where TableID = @TableID and FinishDateTime != NULL
+            //*      -Üstteki işlemde Eğer count = 0 ise MASA ŞUAN DOLU UYARISI VER! count = 1 ise evet masa boş yürü bro, devammmm.
+
+            command = new SqlCommand(query, dbConnection);
+            int compid = (int)CompanyID;
+            int tablid = (int)TableID;
+            command.Parameters.AddWithValue("@CompanyID", compid);
+            command.Parameters.AddWithValue("@CostumerID", CostumerID);
+            command.Parameters.AddWithValue("@TableID", tablid);
+
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (int.Parse(reader["flag"].ToString()) != 0)
+                {
+                    auth = true;
+                }
+            }
+
+            // else --> false demektir yani masa dolu, Alert mesajı çıkart!
+            dbConnection.Close();
+
+            return auth;
+        }
+
+
+
+
+
+
+
     }
 }
