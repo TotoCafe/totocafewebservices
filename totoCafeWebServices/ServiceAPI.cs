@@ -414,9 +414,9 @@ namespace totoCafeWebServices
             }
             int tid = (int)TableID;
 
-            string query = "SELECT count(*) FROM TableController WHERE TableID=@TableID AND FinishDateTime != NULL";
-            //CheckTableController() select count from TableController where TableID = @TableID and FinishDateTime != NULL
-            //*      -Üstteki işlemde Eğer count = 0 ise MASA ŞUAN DOLU UYARISI VER! count = 1 ise evet masa boş yürü bro, devammmm.
+            string query = "SELECT count(*) FROM TableController WHERE TableID=@TableID AND FinishDateTime IS NULL";
+            //CheckTableController() select count from TableController where TableID = @TableID and FinishDateTime IS NULL
+            //*      -Üstteki işlemde Eğer count = 0 ise MASA BOŞ DOLU UYARISI VER! count = 1 MASA DOLU
 
             SqlCommand command = new SqlCommand(query, dbConnection);
 
@@ -424,7 +424,7 @@ namespace totoCafeWebServices
 
             int result = int.Parse(command.ExecuteScalar().ToString());
 
-            if (result == 1)
+            if (result == 0)
             {
                 auth = true;  // Yani demekki masa boş, true dan yürüü
             }
@@ -442,13 +442,13 @@ namespace totoCafeWebServices
             }
             int CostumerID = 0;
             int uid = (int)UserID;
-            string firstquery = "SELECT CostumerID WHERE UserID = @UserID";
-            SqlCommand command = new SqlCommand(firstquery, dbConnection);
+            string query = "SELECT CostumerID FROM Costumer WHERE UserID = @UserID";
+            SqlCommand command = new SqlCommand(query, dbConnection);
             command.Parameters.AddWithValue("@UserID", uid);
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                CostumerID = int.Parse(reader["CostumerID"].ToString());
+                CostumerID = int.Parse(reader[0].ToString());
             }
             reader.Close();
             dbConnection.Close();
@@ -458,7 +458,7 @@ namespace totoCafeWebServices
                 dbConnection.Open();
             }
 
-            string query = "INSERT INTO Request (CompanyID,CostumerID,TableID,Flag) VALUES (@CompanyID,@CostumerID,@TableID,@Flag)";
+            query = "INSERT INTO Request (CompanyID,CostumerID,TableID,Flag) VALUES (@CompanyID,@CostumerID,@TableID,@Flag)";
             int compid = (int)CompanyID;
             int tablid = (int)TableID;
 
@@ -470,10 +470,9 @@ namespace totoCafeWebServices
             command.Parameters.AddWithValue("@Flag", 0);
 
             command.ExecuteNonQuery(); // insert data to "Request" Table
-
+          
             dbConnection.Close();
         }
-
         /// <summary>
         /// Bu metot sürekli kontrol işlemi yapar. Costumer tarafında Qr okutulduktan sonra Request işlemleri yapıldıktan sonra 
         /// Company tarafından isteğimiz onaylandığında "flag" imiz değişmiş olacak ve metot "true" döndürüp 
@@ -513,9 +512,7 @@ namespace totoCafeWebServices
             }
 
             string query = "SELECT flag FROM Request WHERE (CompanyID=@CompanyID) AND (CostumerID=@CostumerID) AND (TableID=@TableID)";
-            //CheckTableController() select count from TableController where TableID = @TableID and FinishDateTime != NULL
-            //*      -Üstteki işlemde Eğer count = 0 ise MASA ŞUAN DOLU UYARISI VER! count = 1 ise evet masa boş yürü bro, devammmm.
-
+           
             command = new SqlCommand(query, dbConnection);
             int compid = (int)CompanyID;
             int tablid = (int)TableID;

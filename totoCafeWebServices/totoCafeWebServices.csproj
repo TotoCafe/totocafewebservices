@@ -75,9 +75,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="deneme.aspx" />
     <Content Include="packages.config" />
     <Content Include="totoHandler.ashx" />
+    <None Include="Properties\PublishProfiles\totoCafeWebServices - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\totoCafeWebServices - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\totoCafeWebServices - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\totoCafeWebServices - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -98,6 +101,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="deneme.aspx.cs">
+      <DependentUpon>deneme.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="deneme.aspx.designer.cs">
+      <DependentUpon>deneme.aspx</DependentUpon>
     </Compile>
     <Compile Include="IServiceAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="TotoCafeDB-Web.config Connection String" description="TotoCafeDB Connection String used in web.config by the application to access the database." defaultValue="Data Source=pdze9v9wz6.database.windows.net;Initial Catalog=TotoCafeDB;Integrated Security=False;User ID=totoCafe;Password=Sohos2015;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\hakan\\Desktop\\totoCafeWebServices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='TotoCafeDB']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\hakan\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='TotoCafeDB']/@connectionString" />
   </parameter>
 </parameters>
