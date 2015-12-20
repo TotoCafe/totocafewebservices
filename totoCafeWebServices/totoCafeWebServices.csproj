@@ -82,6 +82,10 @@
     <None Include="Properties\PublishProfiles\totoCafeWebServices - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\totoCafeWebServices - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\totoCafeWebServices - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\totowebservices - FTP %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\totowebservices - FTP %283%29.pubxml" />
+    <None Include="Properties\PublishProfiles\totowebservices - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\totowebservices - Web Deploy %283%29.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
