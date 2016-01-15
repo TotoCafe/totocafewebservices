@@ -7,7 +7,7 @@ using System.Web;
 
 namespace totoCafeWebServices
 {
-    public class ServiceAPI
+    public class ServiceAPI:IServiceAPI
     {
         SqlConnection dbConnection;
 
@@ -148,7 +148,7 @@ namespace totoCafeWebServices
         /// <summary>
         /// Mobil uygulamamızın veritabanı kayıt işlemi, kullanıcı Register sayfasındaki butonu tıkladığında bu metot çalışacak
         /// </summary>
-        public void CreateNewUser(string Name, string Surname, string Email, string Password, DateTime BirthDate, double GenderID)
+        public void CreateNewUser(string Name, string Surname, string Email, string Password, string BirthDate, double GenderID)
         {
             if (dbConnection.State.ToString() == "Closed")
             {
@@ -158,12 +158,14 @@ namespace totoCafeWebServices
             //SCOPE_IDENTITY Bize veritabanına eklenen satırın ID sini getirir :)   kullanımı sadece bu kadar -->  SET @ID = SCOPE_IDENTITY()
             string query = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
 
+            DateTime birthDateTime = Convert.ToDateTime(BirthDate);
+
             SqlCommand command = new SqlCommand(query, dbConnection);
             command.Parameters.AddWithValue("@Name", Name);
             command.Parameters.AddWithValue("@Surname", Surname);
             command.Parameters.AddWithValue("@Email", Email);
             command.Parameters.AddWithValue("@Password", Password);
-            command.Parameters.AddWithValue("@BirthDate", BirthDate);
+            command.Parameters.AddWithValue("@BirthDate", birthDateTime);
             command.Parameters.AddWithValue("@GenderID", GenderID);
             command.Parameters.AddWithValue("@PlatformID", 1); // PlatformID = 1 == TOTOCAFE  || PlatformID = 2 == FACEBOOK
 
@@ -261,6 +263,97 @@ namespace totoCafeWebServices
 
         #region DataTables
 
+        public DataTable getCategoriesOfCompany(double CompanyID)
+        {
+           
+            int compID = (int)CompanyID;
+
+            DataTable dtCategories = new DataTable();
+
+            dtCategories.Columns.Add("CategoryID", typeof(int));
+            dtCategories.Columns.Add("CategoryName", typeof(String));
+            dtCategories.Columns.Add("AvailabilityID", typeof(int));
+            dtCategories.Columns.Add("CompanyID", typeof(int));
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+
+            string query = "SELECT CategoryID,CategoryName,AvailabilityID,CompanyID FROM Category WHERE CompanyID = @CompanyID";
+            SqlCommand command = new SqlCommand(query, dbConnection);
+            command.Parameters.AddWithValue("@CompanyID", compID);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    dtCategories.Rows.Add(
+                        reader["CategoryID"],
+                        reader["CategoryName"],
+                        reader["AvailabilityID"],
+                        reader["CompanyID"]
+                        );
+                }
+            }
+
+            reader.Close();
+            dbConnection.Close();
+
+            return dtCategories;
+
+        }
+
+        public DataTable getProductViaCategory(double CategoryID)
+        {
+            int catID = (int)CategoryID;
+
+            DataTable dtProducts = new DataTable();
+
+            dtProducts.Columns.Add("ProductID", typeof(int));
+            dtProducts.Columns.Add("ProductName", typeof(String));
+            dtProducts.Columns.Add("Detail", typeof(String));
+            dtProducts.Columns.Add("Price", typeof(int));
+            dtProducts.Columns.Add("Credit", typeof(int));
+            dtProducts.Columns.Add("CategoryID", typeof(int));
+            dtProducts.Columns.Add("AvailabilityID", typeof(int));
+
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+
+            string query = "SELECT ProductID,ProductName,Detail,Price,Credit,CategoryID,AvailabilityID FROM Product WHERE CategoryID = @CategoryID";
+            SqlCommand command = new SqlCommand(query, dbConnection);
+            command.Parameters.AddWithValue("@CategoryID", catID);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    dtProducts.Rows.Add(
+                        reader["ProductID"],
+                        reader["ProductName"],
+                        reader["Detail"],
+                        reader["Price"],
+                        reader["Credit"],
+                        reader["CategoryID"],
+                        reader["AvailabilityID"]
+                        );
+                }
+            }
+
+            reader.Close();
+            dbConnection.Close();
+
+            return dtProducts;
+        }
+
+        
         /// <summary>
         /// DataTable ile user objesi oluşurup User Tablosundaki tüm verileri DataTable a aktardım.
         /// Her kullanıcı için Email Unique'tir.
@@ -305,8 +398,10 @@ namespace totoCafeWebServices
         /// </summary>
         /// <param name="UserID"></param>
         /// <returns></returns>
-        public DataTable GetCostumerDetails(int UserID)
+        public DataTable GetCostumerDetails(double UserID)
         {
+            int uID = (int)UserID;
+
             DataTable costumerTable = new DataTable();
             costumerTable.Columns.Add(new DataColumn("CostumerID", typeof(int)));
             costumerTable.Columns.Add(new DataColumn("UserID", typeof(int)));
@@ -320,14 +415,18 @@ namespace totoCafeWebServices
             string query = "SELECT * FROM Costumer WHERE UserID=@UserID";
 
             SqlCommand command = new SqlCommand(query, dbConnection);
-            command.Parameters.AddWithValue("@UserID", UserID);
+            command.Parameters.AddWithValue("@UserID", uID);
             SqlDataReader reader = command.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    costumerTable.Rows.Add(reader["CostumerID"], reader["UserID"], reader["UserTypeID"]);
+                    costumerTable.Rows.Add(
+                        reader["CostumerID"], 
+                        reader["UserID"],
+                        reader["UserTypeID"]
+                        );
                 }
             }
 
@@ -338,7 +437,8 @@ namespace totoCafeWebServices
         }
 
         #endregion
-
+        
+        #region Masa Oturma
         /// <summary>
         /// User tablosuna yeni kayıt eklediğinde arkasından bu metot çalışır
         /// Unique userID ve metot çağırılırken UserTypeID si belirtilmiştir.
@@ -368,8 +468,6 @@ namespace totoCafeWebServices
             dbConnection.Close();
 
         }
-
-
         public bool CheckAvailabilityOfTable(double TableID)
         {
             bool auth = false;
@@ -535,11 +633,6 @@ namespace totoCafeWebServices
             return auth;
         }
 
-
-
-
-
-
-
+        #endregion
     }
 }

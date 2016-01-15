@@ -10,7 +10,7 @@ namespace totoCafeWebServices
     public class DBConnect
     {
         private static SqlConnection NewCon;
-        private static string conStr = ConfigurationManager.ConnectionStrings["totoCafeDB"].ConnectionString;
+        private static string conStr = ConfigurationManager.ConnectionStrings["TotoCafeDB"].ConnectionString;
 
         public static SqlConnection getConnection()
         {

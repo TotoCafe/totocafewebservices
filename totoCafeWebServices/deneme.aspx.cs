@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using System.Data;
 namespace totoCafeWebServices
 {
     public partial class deneme : System.Web.UI.Page
@@ -19,7 +19,15 @@ namespace totoCafeWebServices
         }
         protected void Page_Load(object sender, EventArgs e)
         {
+            //if (!this.IsPostBack)
+            //{
+            //    ServiceAPI myService = new ServiceAPI();
 
+            //    DataTable dtCategories = myService.getCategoriesOfCompany(2);
+               
+            //    GridView1.DataSource = dtCategories;
+            //    GridView1.DataBind();
+            //}
         }
 
         protected void btnResult_Click(object sender, EventArgs e)
@@ -66,6 +74,16 @@ namespace totoCafeWebServices
             command.ExecuteNonQuery(); // insert data to "Request" Table
             lblStatus.Text = "BAŞARILI";
             dbConnection.Close();
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+
+            string BirthDate = "1993-10-07";
+            DateTime birthDateTime = Convert.ToDateTime(BirthDate);
+
+
+            tbStringToDate.Text = birthDateTime.ToString();
         }
     }
 }

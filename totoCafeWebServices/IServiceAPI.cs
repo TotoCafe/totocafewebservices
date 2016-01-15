@@ -9,7 +9,7 @@ namespace totoCafeWebServices
 {
     public interface IServiceAPI
     {
-        void CreateNewUser(string Name, string Surname, string Email, string Password,DateTime BirthDate, double GenderID );
+        void CreateNewUser(string Name, string Surname, string Email, string Password,string BirthDate, double GenderID );
         bool UserAuthentication(string Email, string Passsword);
         void FacebookLogin(string Name, string Surname, string Email, string Password, DateTime BirthDate, double GenderID);
         void AnonymousLogin(string DeviceID);
@@ -17,6 +17,9 @@ namespace totoCafeWebServices
         double GetAnonymousID(string DeviceID);
         void CreateNewAnonymous(string DeviceID);
         void InsertUserToCostumerTable(double UserID, double UserTypeID);
+
+        DataTable getCategoriesOfCompany(double CompanyID);
+        DataTable getProductViaCategory(double CategoryID);
 
         DataTable GetCostumerDetails(double UserID);
         DataTable GetUserDetails(string Email);
