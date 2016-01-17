@@ -49,6 +49,16 @@
             </Columns>
         </asp:GridView>
         <br />
+        <br />
+        User Authentication<br />
+        Email&nbsp;&nbsp;&nbsp;
+        <asp:TextBox ID="tbEmail" runat="server"></asp:TextBox>
+&nbsp;Password
+        <asp:TextBox ID="tbPassword" runat="server"></asp:TextBox>
+&nbsp; RESULT
+        <asp:Label ID="lblAuth" runat="server" Text="Label"></asp:Label>
+        <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Button" />
+        <br />
 
     </form>
 </body>

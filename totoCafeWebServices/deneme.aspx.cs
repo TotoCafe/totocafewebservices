@@ -93,5 +93,14 @@ namespace totoCafeWebServices
             GridViewProduct.DataSource = dtProductsOfCategory;
             GridViewProduct.DataBind();
         }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            ServiceAPI servis = new ServiceAPI();
+
+            bool result = servis.UserAuthentication(tbEmail.Text, tbPassword.Text);
+
+            lblAuth.Text = result.ToString();
+        }
     }
 }
