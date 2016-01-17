@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="IIS Web Application Name" description="" value="totowebservices" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\hakan\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp$" />
-    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Users\\hakan\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp$" />
   </parameter>
   <parameter name="TotoCafeDB-Web.config Connection String" description="" value="Data Source=totocafe.database.windows.net;Initial Catalog=TotoCafeDB;Integrated Security=False;User ID=totoCafe;Password=Sohos2015;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False" tags="">
-    <parameterEntry kind="XmlFile" scope="C:\\Users\\hakan\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='TotoCafeDB']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="D:\\Documents\\GitHub\\totocafewebservices\\totoCafeWebServices\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='TotoCafeDB']/@connectionString" />
   </parameter>
 </parameters>

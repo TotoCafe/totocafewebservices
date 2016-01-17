@@ -78,12 +78,6 @@
     <Content Include="deneme.aspx" />
     <Content Include="packages.config" />
     <Content Include="totoHandler.ashx" />
-    <None Include="Properties\PublishProfiles\totoProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\totowebservices - FTP %282%29.pubxml" />
-    <None Include="Properties\PublishProfiles\totowebservices - FTP %283%29.pubxml" />
-    <None Include="Properties\PublishProfiles\totowebservices - FTP %284%29.pubxml" />
-    <None Include="Properties\PublishProfiles\totowebservices - Web Deploy %282%29.pubxml" />
-    <None Include="Properties\PublishProfiles\totowebservices - Web Deploy %283%29.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -117,6 +111,9 @@
     <Compile Include="totoHandler.ashx.cs">
       <DependentUpon>totoHandler.ashx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

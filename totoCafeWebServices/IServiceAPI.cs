@@ -19,6 +19,9 @@ namespace totoCafeWebServices
         void CreateNewAnonymous(string DeviceID);
         void InsertUserToCostumerTable(double UserID, double UserTypeID);
 
+        void InsertToOrder(double amount, double ControllerID, double ProductID, string OrderDetails); 
+
+
         DataTable getCategoriesOfCompany(double CompanyID);
         DataTable getProductViaCategory(double CategoryID);
 

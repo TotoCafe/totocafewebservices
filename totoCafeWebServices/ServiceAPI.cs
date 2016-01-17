@@ -663,7 +663,33 @@ namespace totoCafeWebServices
             return auth;
         }
 
-       
+        public void InsertToOrder(double Amount, double ControllerID, double ProductID, string OrderDetails)
+        {
+             DateTime orderTime = DateTime.Now;
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            
+            int mAmount = (int)Amount;
+            int mControllerID = (int)ControllerID;
+            int mProductID = (int)ProductID;
+
+            string query = "INSERT INTO [Order] VALUES (@Amount, @OrderTime, @ControllerID, @ProductID, @OrderDetails";
+            SqlCommand command = new SqlCommand(query, dbConnection);
+            command.Parameters.AddWithValue("@Amount", mAmount);
+            command.Parameters.AddWithValue("@OrderTime", orderTime);
+            command.Parameters.AddWithValue("@ControllerID", mControllerID);
+            command.Parameters.AddWithValue("@ProductID", mProductID);
+            command.Parameters.AddWithValue("@OrderDetails", OrderDetails);
+
+            command.ExecuteNonQuery();
+
+            dbConnection.Close();
+
+        }
+
+
 
         #endregion
     }
