@@ -11,7 +11,7 @@ namespace totoCafeWebServices
     public partial class deneme : System.Web.UI.Page
     {
         SqlConnection dbConnection;
-
+        ServiceAPI myService = new ServiceAPI();
         public deneme()
         {
             dbConnection = DBConnect.getConnection();
@@ -19,15 +19,14 @@ namespace totoCafeWebServices
         }
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (!this.IsPostBack)
-            //{
-            //    ServiceAPI myService = new ServiceAPI();
-
-            //    DataTable dtCategories = myService.getCategoriesOfCompany(2);
+            if (!this.IsPostBack)
+            {
                
-            //    GridView1.DataSource = dtCategories;
-            //    GridView1.DataBind();
-            //}
+               DataTable dtCategories = myService.getCategoriesOfCompany(13);
+               GridViewCategory.DataSource = dtCategories;
+                GridViewCategory.DataBind();
+              
+            }
         }
 
         protected void btnResult_Click(object sender, EventArgs e)
@@ -84,6 +83,15 @@ namespace totoCafeWebServices
 
 
             tbStringToDate.Text = birthDateTime.ToString();
+        }
+
+        protected void btnGetProduct_Click(object sender, EventArgs e)
+        {
+            int catID = int.Parse(tbCategoryID.Text);
+            //Category IDs : 26 , 27 , 28 , 29 , 30 
+            DataTable dtProductsOfCategory = myService.getProductViaCategory(catID);
+            GridViewProduct.DataSource = dtProductsOfCategory;
+            GridViewProduct.DataBind();
         }
     }
 }

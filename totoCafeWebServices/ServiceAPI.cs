@@ -145,6 +145,36 @@ namespace totoCafeWebServices
 
         #region Normal Register And Login
 
+        public double GetUserID(string email)
+        {
+            if (dbConnection.State.ToString() == "Closed")
+            {
+                dbConnection.Open();
+            }
+            int UserID = 0;
+
+            string query = "SELECT UserID FROM [User] WHERE Email=@Email";
+
+            SqlCommand command = new SqlCommand(query, dbConnection);
+            command.Parameters.AddWithValue("@Email", email);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    UserID = int.Parse(reader["UserID"].ToString());
+                }
+            }
+
+            reader.Close();
+            dbConnection.Close();
+
+            return UserID;
+        }
+
+
         /// <summary>
         /// Mobil uygulamamızın veritabanı kayıt işlemi, kullanıcı Register sayfasındaki butonu tıkladığında bu metot çalışacak
         /// </summary>
@@ -156,7 +186,7 @@ namespace totoCafeWebServices
             }
             int UserID = 0;
             //SCOPE_IDENTITY Bize veritabanına eklenen satırın ID sini getirir :)   kullanımı sadece bu kadar -->  SET @ID = SCOPE_IDENTITY()
-            string query = "INSERT INTO User (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
+            string query = "INSERT INTO [User] (Name,Surname,Email,Password,BirthDate,GenderID,PlatformID) VALUES (@Name,@Surname,@Email,@Password,@BirthDate,@GenderID,@PlatformID) SET @ID = SCOPE_IDENTITY()";
 
             DateTime birthDateTime = Convert.ToDateTime(BirthDate);
 
@@ -205,7 +235,7 @@ namespace totoCafeWebServices
                 dbConnection.Open();
             }
 
-            string query = "SELECT UserID FROM User WHERE Email=@Email AND Password=@Password";
+            string query = "SELECT UserID FROM [User] WHERE Email=@Email AND Password=@Password";
 
             SqlCommand command = new SqlCommand(query, dbConnection);
 
@@ -315,8 +345,8 @@ namespace totoCafeWebServices
             dtProducts.Columns.Add("ProductID", typeof(int));
             dtProducts.Columns.Add("ProductName", typeof(String));
             dtProducts.Columns.Add("Detail", typeof(String));
-            dtProducts.Columns.Add("Price", typeof(int));
-            dtProducts.Columns.Add("Credit", typeof(int));
+            dtProducts.Columns.Add("Price", typeof(float));
+            dtProducts.Columns.Add("Credit", typeof(float));
             dtProducts.Columns.Add("CategoryID", typeof(int));
             dtProducts.Columns.Add("AvailabilityID", typeof(int));
 
@@ -632,6 +662,8 @@ namespace totoCafeWebServices
 
             return auth;
         }
+
+       
 
         #endregion
     }

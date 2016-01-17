@@ -15,6 +15,7 @@ namespace totoCafeWebServices
         void AnonymousLogin(string DeviceID);
         bool AnonymousAuthentication(string DeviceID);
         double GetAnonymousID(string DeviceID);
+        double GetUserID(string email);
         void CreateNewAnonymous(string DeviceID);
         void InsertUserToCostumerTable(double UserID, double UserTypeID);
 

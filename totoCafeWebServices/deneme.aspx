@@ -19,7 +19,7 @@
         </div>
         <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Convert String to Date" />
         &nbsp;<asp:TextBox ID="tbStringToDate" runat="server"></asp:TextBox>
-        <asp:GridView ID="GridView1" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+        <asp:GridView ID="GridViewCategory" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
             runat="server" AutoGenerateColumns="false">
             <Columns>
                 <asp:BoundField DataField="CategoryID" HeaderText="CategoryID" ItemStyle-Width="30" />
@@ -30,6 +30,24 @@
         </asp:GridView>
 
         <br />
+        <asp:Label ID="Label1" runat="server" Text="Enter Category ID: "></asp:Label>
+        <asp:TextBox ID="tbCategoryID" runat="server"></asp:TextBox>
+        <asp:Button ID="btnGetProduct" runat="server" OnClick="btnGetProduct_Click" Text="Get Products Of This Category" />
+
+        <br />
+
+        <asp:GridView ID="GridViewProduct" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+            runat="server" AutoGenerateColumns="false">
+            <Columns>
+                <asp:BoundField DataField="ProductID" HeaderText="ProductID" ItemStyle-Width="30" />
+                <asp:BoundField DataField="ProductName" HeaderText="ProductName" ItemStyle-Width="150" />
+                <asp:BoundField DataField="Detail" HeaderText="Detail" ItemStyle-Width="150" />
+                <asp:BoundField DataField="Credit" HeaderText="Credit" ItemStyle-Width="150" />
+                <asp:BoundField DataField="CategoryID" HeaderText="CategoryID" ItemStyle-Width="150" />
+                <asp:BoundField DataField="AvailabilityID" HeaderText="AvailabilityID" ItemStyle-Width="150" />
+
+            </Columns>
+        </asp:GridView>
         <br />
 
     </form>
