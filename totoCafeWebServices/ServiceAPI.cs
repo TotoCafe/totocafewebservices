@@ -586,7 +586,7 @@ namespace totoCafeWebServices
                 dbConnection.Open();
             }
 
-            query = "INSERT INTO Request (CompanyID,CostumerID,TableID,Flag) VALUES (@CompanyID,@CostumerID,@TableID,@Flag)";
+            query = "INSERT INTO [Request] (CompanyID,CostumerID,TableID,Flag) VALUES (@CompanyID,@CostumerID,@TableID,@Flag)";
             int compid = (int)CompanyID;
             int tablid = (int)TableID;
 
@@ -639,7 +639,7 @@ namespace totoCafeWebServices
                 dbConnection.Open();
             }
 
-            string query = "SELECT flag FROM Request WHERE (CompanyID=@CompanyID) AND (CostumerID=@CostumerID) AND (TableID=@TableID)";
+            string query = "SELECT flag FROM [Request] WHERE (CompanyID=@CompanyID) AND (CostumerID=@CostumerID) AND (TableID=@TableID)";
            
             command = new SqlCommand(query, dbConnection);
             int compid = (int)CompanyID;
